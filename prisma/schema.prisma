@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum UserRole {
+  JAMBITE
+  STUDENT
+  ALUMNI
+  CORPS_MEMBER
+  LECTURER
+  EMPLOYER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  matricNumber  String?   @unique
+  role          UserRole
+  institution   String?
+  faculty       String?
+  department    String?
+  yearOfStudy   Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  biometricId   String?   @unique
+  
+  // Relations
+  posts         Post[]
+  messages      Message[]
+  marketplace   MarketplaceItem[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id           String   @id @default(cuid())
+  content      String
+  senderId     String
+  sender       User     @relation(fields: [senderId], references: [id])
+  recipientId  String
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime?
+  isRead       Boolean  @default(false)
+}
+
+model MarketplaceItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       Float
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id])
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

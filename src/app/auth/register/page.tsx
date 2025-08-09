@@ -1,16 +1,17 @@
+"use client";
+
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
-import { UserRole } from "@prisma/client";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.nativeEnum(UserRole),
+  role: z.enum(["JAMBITE", "STUDENT", "ALUMNI", "CORPS_MEMBER", "LECTURER", "EMPLOYER"]),
   matricNumber: z.string().optional(),
   institution: z.string().optional(),
 });
